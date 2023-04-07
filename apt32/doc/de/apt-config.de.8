@@ -1,0 +1,140 @@
+'\" t
+.\"     Title: apt-config
+.\"    Author: Jason Gunthorpe
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 29. Februar 2004
+.\"    Manual: APT
+.\"    Source: Linux
+.\"  Language: English
+.\"
+.TH "APT\-CONFIG" "8" "29\&. Februar 2004" "Linux" "APT"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+apt-config \- APT\-Konfigurationsabfrageprogramm
+.SH "SYNOPSIS"
+.HP \w'\fBapt\-config\fR\ 'u
+\fBapt\-config\fR [\fB\-hv\fR] [\fB\-o=\fR\fB\fIKonfigurationszeichenkette\fR\fR] [\fB\-c=\fR\fB\fIDatei\fR\fR] {[shell] | [Abbild]}
+.SH "BESCHREIBUNG"
+.PP
+\fBapt\-config\fR
+ist ein internes Programm, das von vielen Teilen des APT\-Pakets benutzt wird, um durchgängige Konfigurierbarkeit bereitzustellen\&. Es greift auf die Hauptkonfigurationsdatei
+/etc/apt/apt\&.conf
+auf eine Art zu, die leicht für geskriptete Anwendungen zu benutzen ist\&.
+.PP
+Außer, wenn die
+\fB\-h\fR\- oder
+\fB\-\-help\fR\-Option angegeben wurde, muss einer der Befehle unterhalb vorkommen\&.
+.PP
+shell
+.RS 4
+shell wird benutzt, um aus einem Shellskript auf Konfigurationsinformationen zuzugreifen\&. Es wird ein Paar aus Argumenten angegeben \(en das erste als Shell\-Variable und das zweite als Konfigurationswert zum Abfragen\&. Als Ausgabe listet es eine Serie von Shell\-Zuweisungsbefehlen für jeden vorhandenen Wert auf\&. In einen Shellskript sollte es wie folgt benutzt werden:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+OPTS="\-f"
+RES=`apt\-config shell OPTS MyApp::options`
+eval $RES
+.fi
+.if n \{\
+.RE
+.\}
+Dies wird die Shell\-Umgebungsvariable $OPT auf den Wert von MyApp::options mit einer Vorgabe von
+\fB\-f\fR
+setzen\&.
+.sp
+An das Konfigurationselement kann /[fdbi] angehängt werden\&. \(Fcf\(Fo gibt Dateinamen zurück, \(Fcd\(Fo gibt Verzeichnisse zurück, \(Fcb\(Fo gibt true oder false zurück und \(Fci\(Fo gibt eine Ganzzahl zurück\&. Jede Rückgabe ist normiert und intern geprüft\&.
+.RE
+.PP
+dump
+.RS 4
+Nur der Inhalt des Konfigurationsbereichs wird angezeigt\&.
+.RE
+.SH "OPTIONEN"
+.PP
+Alle Befehlszeilenoptionen können durch die Konfigurationsdatei gesetzt werden, die Beschreibung gibt die zu setzende Option an\&. Für boolesche Optionen können Sie die Konfigurationsdatei überschreiben, indem Sie etwas wie
+\fB\-f\-\fR,
+\fB\-\-no\-f\fR,
+\fB\-f=no\fR
+oder etliche weitere Varianten benutzen\&.
+.PP
+\fB\-h\fR, \fB\-\-help\fR
+.RS 4
+Ein kurze Aufrufzusammenfassung zeigen\&.
+.RE
+.PP
+\fB\-v\fR, \fB\-\-version\fR
+.RS 4
+Die Version des Programms anzeigen\&.
+.RE
+.PP
+\fB\-c\fR, \fB\-\-config\-file\fR
+.RS 4
+Konfigurationsdatei; Gibt eine Konfigurationssdatei zum Benutzen an\&. Das Programm wird die Vorgabe\-Konfigurationsdatei und dann diese Konfigurationsdatei lesen\&. Lesen Sie
+\fBapt.conf\fR(5), um Syntax\-Informationen zu erhalten
+.RE
+.PP
+\fB\-o\fR, \fB\-\-option\fR
+.RS 4
+Eine Konfigurationsoption setzen; Dies wird eine beliebige Konfigurationsoption setzen\&. Die Syntax lautet
+\fB\-o Foo::Bar=bar\fR\&.
+\fB\-o\fR
+und
+\fB\-\-option\fR
+kann mehrfach benutzt werden, um verschiedene Optionen zu setzen\&.
+.RE
+.SH "SIEHE AUCH"
+.PP
+\fBapt.conf\fR(5)
+.SH "DIAGNOSE"
+.PP
+\fBapt\-config\fR
+gibt bei normalen Operationen 0 zurück, dezimal 100 bei Fehlern\&.
+.SH "FEHLER"
+.PP
+\m[blue]\fBAPT\-Fehlerseite\fR\m[]\&\s-2\u[1]\d\s+2\&. Wenn Sie einen Fehler in APT berichten möchten, lesen Sie bitte
+/usr/share/doc/debian/bug\-reporting\&.txt
+oder den
+\fBreportbug\fR(1)\-Befehl\&. Verfassen Sie Fehlerberichte bitte auf Englisch\&.
+.SH "ÜBERSETZUNG"
+.PP
+Die deutsche Übersetzung wurde 2009 von Chris Leick
+c\&.leick@vollbio\&.de
+angefertigt in Zusammenarbeit mit dem Debian German\-l10n\-Team
+debian\-l10n\-german@lists\&.debian\&.org\&.
+.PP
+Note that this translated document may contain untranslated parts\&. This is done on purpose, to avoid losing content when the translation is lagging behind the original content\&.
+.SH "AUTHORS"
+.PP
+\fBJason Gunthorpe\fR
+.RS 4
+.RE
+.PP
+\fBAPT\-Team\fR
+.RS 4
+.RE
+.SH "NOTES"
+.IP " 1." 4
+APT-Fehlerseite
+.RS 4
+\%http://bugs.debian.org/src:apt
+.RE
