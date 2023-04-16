@@ -56,11 +56,11 @@ string GPGVMethod::VerifyGetSigners(const char *file, const char *outfile,
    int fd[2];
    FILE *pipein;
    int status;
-   string const gpgvpath = _config->Find("Dir::Bin::gpg", "/var/jb/usr/bin/gpgv");
+   string const gpgvpath = _config->Find("Dir::Bin::gpg", "/usr/bin/gpgv");
    // FIXME: remove support for deprecated APT::GPGV setting
    string const trustedFile = _config->FindFile("Dir::Etc::Trusted",
-			_config->Find("APT::GPGV::TrustedKeyring", "/var/jb/etc/apt/trusted.gpg").c_str());
-   string const trustedPath = _config->FindDir("Dir::Etc::TrustedParts", "/var/jb/etc/apt/trusted.gpg.d");
+			_config->Find("APT::GPGV::TrustedKeyring", "/etc/apt/trusted.gpg").c_str());
+   string const trustedPath = _config->FindDir("Dir::Etc::TrustedParts", "/etc/apt/trusted.gpg.d");
    if (Debug == true)
    {
       std::clog << "gpgv path: " << gpgvpath << std::endl;
