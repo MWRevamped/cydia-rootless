@@ -7,7 +7,7 @@ Version:
 Conflicts: org.thebigboss.russiancydia
 Provides: org.thebigboss.russiancydia
 Replaces: cydia, org.thebigboss.russiancydia
-Depends: cydia
+Depends: cydia, oldabi
 Description: languages and translations for Cydia
 Name: Cydia Translations
 Author: Jay Freeman (saurik) <saurik@saurik.com>
