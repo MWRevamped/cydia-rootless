@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/local/bin/bash
 
 if [[ $# -eq 0 ]]; then
     flags=(--dirty="+")
