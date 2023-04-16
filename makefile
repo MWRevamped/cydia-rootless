@@ -1,7 +1,7 @@
 .DELETE_ON_ERROR:
 .SECONDARY:
 
-dpkg := dpkg-deb -Zlzma
+dpkg := dpkg-deb
 version := $(shell ./version.sh)
 
 flag := 
@@ -48,10 +48,6 @@ iapt += -Iapt32-deb
 iapt += -Iapt-extra
 iapt += -IObjects/apt32
 
-ifeq ($(do32),yes)
-flag += $(patsubst %,-Xarch_armv6 %,$(iapt))
-endif
-
 flag += $(patsubst %,-Xarch_$(arch) %,$(subst apt32,apt64,$(iapt)))
 
 flag += -I.
@@ -85,13 +81,6 @@ libs += -framework SystemConfiguration
 libs += -framework WebKit
 
 libs += -framework CFNetwork
-
-ifeq ($(do32),yes)
-libs += -framework WebCore
-libs += -llockdown
-libs += -Xarch_armv6 -Wl,-force_load,Objects/libapt32.a
-lapt += Objects/libapt32.a
-endif
 
 libs += -Xarch_$(arch) -Wl,-force_load,Objects/libapt64.a
 lapt += Objects/libapt64.a
@@ -148,26 +137,6 @@ link += -Xarch_$(arch) -Wl,-lz
 flag += -DAPT_PKG_EXPOSE_STRING_VIEW
 flag += -Dsighandler_t=sig_t
 
-ifeq ($(do32),yes)
-flag32 := 
-flag32 += -arch armv6
-flag32 += -Xarch_armv6 -miphoneos-version-min=2.0
-flag32 += -Xarch_armv6 -marm # @synchronized
-flag32 += -Xarch_armv6 -mcpu=arm1176jzf-s
-flag32 += -mllvm -arm-reserve-r9
-
-link += -Xarch_armv6 -Wl,-lgcc_s.1
-link += -Xarch_armv6 -Wl,-segalign,4000
-
-apt32 := $(cycc) $(flag32) $(flag)
-apt32 += -Wno-deprecated-register
-apt32 += -Wno-format-security
-apt32 += -Wno-tautological-compare
-apt32 += -Wno-uninitialized
-apt32 += -Wno-unused-private-field
-apt32 += -Wno-unused-variable
-endif
-
 flag64 := 
 flag64 += -arch $(arch)
 flag64 += -Xarch_$(arch) -m$(kind)-version-min=7.0
@@ -185,10 +154,6 @@ apt32 += $(eapt)
 eapt += -Wno-format
 eapt += -Wno-logical-op-parentheses
 iapt += $(eapt)
-
-ifeq ($(do32),yes)
-cycc += $(flag32)
-endif
 
 cycc += $(flag64)
 
@@ -306,39 +271,39 @@ postinst: postinst.mm CyteKit/stringWith.mm CyteKit/stringWith.h CyteKit/UCPlatf
 	$(cycc) $(plus) -o $@ $(filter %.mm,$^) $(flag) $(link) -framework CoreFoundation -framework Foundation -framework UIKit
 	@ldid -T0 -S $@
 
-debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion setnsfpn cydo $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/move.sh Library/startup
+debs/cydia_$(version)_iphoneos-arm64.deb: MobileCydia preinst postinst cfversion setnsfpn cydo $(images) $(shell find MobileCydia.app) cydia.control Library/firmware.sh Library/move.sh Library/startup
 	sudo rm -rf _
-	mkdir -p _/var/lib/cydia
+	mkdir -p _/var/jb/var/lib/cydia
 	
-	mkdir -p _/etc/apt
-	mkdir _/etc/apt/apt.conf.d
-	mkdir _/etc/apt/preferences.d
-	cp -a Trusted.gpg _/etc/apt/trusted.gpg.d
-	cp -a Sources.list _/etc/apt/sources.list.d
+	mkdir -p _/var/jb/etc/apt
+	mkdir _/var/jb/etc/apt/apt.conf.d
+	mkdir _/var/jb/etc/apt/preferences.d
+	cp -a Trusted.gpg _/var/jb/etc/apt/trusted.gpg.d
+	cp -a Sources.list _/var/jb/etc/apt/sources.list.d
 	
-	mkdir -p _/usr/libexec
-	cp -a Library _/usr/libexec/cydia
-	cp -a sysroot/usr/bin/du _/usr/libexec/cydia
-	cp -a cfversion _/usr/libexec/cydia
-	cp -a setnsfpn _/usr/libexec/cydia
+	mkdir -p _/var/jb/usr/libexec
+	cp -a Library _/var/jb/usr/libexec/cydia
+	cp -a sysroot/usr/bin/du _/var/jb/usr/libexec/cydia
+	cp -a cfversion _/var/jb/usr/libexec/cydia
+	cp -a setnsfpn _/var/jb/usr/libexec/cydia
 	
-	cp -a cydo _/usr/libexec/cydia
+	cp -a cydo _/var/jb/usr/libexec/cydia
 	
-	mkdir -p _/Library
-	cp -a LaunchDaemons _/Library/LaunchDaemons
+	mkdir -p _/var/jb/Library
+	cp -a LaunchDaemons _/var/jb/Library/LaunchDaemons
 	
-	mkdir -p _/Applications
-	cp -a MobileCydia.app _/Applications/Cydia.app
-	rm -rf _/Applications/Cydia.app/*.lproj
-	cp -a MobileCydia _/Applications/Cydia.app/Cydia
+	mkdir -p _/var/jb/Applications
+	cp -a MobileCydia.app _/var/jb/Applications/Cydia.app
+	rm -rf _/var/jb/Applications/Cydia.app/*.lproj
+	cp -a MobileCydia _/var/jb/Applications/Cydia.app/Cydia
 	
-	for meth in bzip2 gzip lzma gpgv http https store $(methods); do ln -s Cydia _/Applications/Cydia.app/"$${meth}"; done
+	for meth in bzip2 gzip lzma gpgv http https store $(methods); do ln -s Cydia _/var/jb/Applications/Cydia.app/"$${meth}"; done
 	
-	cd MobileCydia.app && find . -name '*.png' -exec cp -af ../Images/MobileCydia.app/{} ../_/Applications/Cydia.app/{} ';'
+	cd MobileCydia.app && find . -name '*.png' -exec cp -af ../Images/MobileCydia.app/{} ../_/var/jb/Applications/Cydia.app/{} ';'
 	
-	mkdir -p _/Applications/Cydia.app/Sources
-	ln -s /usr/share/bigboss/icons/bigboss.png _/Applications/Cydia.app/Sources/apt.bigboss.us.com.png
-	ln -s /usr/share/bigboss/icons/planetiphones.png _/Applications/Cydia.app/Sections/"Planet-iPhones Mods.png"
+	mkdir -p _/var/jb/Applications/Cydia.app/Sources
+	ln -s /usr/share/bigboss/icons/bigboss.png _/var/jb/Applications/Cydia.app/Sources/apt.bigboss.us.com.png
+	ln -s /usr/share/bigboss/icons/planetiphones.png _/var/jb/Applications/Cydia.app/Sections/"Planet-iPhones Mods.png"
 	
 	mkdir -p _/DEBIAN
 	./control.sh cydia.control _ >_/DEBIAN/control
@@ -348,18 +313,18 @@ debs/cydia_$(version)_iphoneos-arm.deb: MobileCydia preinst postinst cfversion s
 	
 	sudo chown -R 0 _
 	sudo chgrp -R 0 _
-	sudo chmod 6755 _/usr/libexec/cydia/cydo
+	sudo chmod 6755 _/var/jb/usr/libexec/cydia/cydo
 	
 	mkdir -p debs
-	ln -sf debs/cydia_$(version)_iphoneos-arm.deb Cydia.deb
+	ln -sf debs/cydia_$(version)_iphoneos-arm64.deb Cydia.deb
 	$(dpkg) -b _ Cydia.deb
 	@echo "$$(stat -L -f "%z" Cydia.deb) $$(stat -f "%Y" Cydia.deb)"
 
 $(lproj_deb): $(shell find MobileCydia.app -name '*.strings') cydia-lproj.control
 	sudo rm -rf __
-	mkdir -p __/Applications/Cydia.app
+	mkdir -p __/var/jb/Applications/Cydia.app
 	
-	cp -a MobileCydia.app/*.lproj __/Applications/Cydia.app
+	cp -a MobileCydia.app/*.lproj __/var/jb/Applications/Cydia.app
 	
 	mkdir -p __/DEBIAN
 	./control.sh cydia-lproj.control __ >__/DEBIAN/control
@@ -368,10 +333,10 @@ $(lproj_deb): $(shell find MobileCydia.app -name '*.strings') cydia-lproj.contro
 	sudo chgrp -R 0 __
 	
 	mkdir -p debs
-	ln -sf debs/cydia-lproj_$(version)_iphoneos-arm.deb Cydia_.deb
+	ln -sf debs/cydia-lproj_$(version)_iphoneos-arm64.deb Cydia_.deb
 	$(dpkg) -b __ Cydia_.deb
 	@echo "$$(stat -L -f "%z" Cydia_.deb) $$(stat -f "%Y" Cydia_.deb)"
 	
-package: debs/cydia_$(version)_iphoneos-arm.deb $(lproj_deb)
+package: debs/cydia_$(version)_iphoneos-arm64.deb $(lproj_deb)
 
 .PHONY: all clean package
