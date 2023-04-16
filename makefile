@@ -6,7 +6,7 @@ version := $(shell ./version.sh)
 
 flag := 
 plus :=
-link := 
+link := -llockdown
 libs := 
 lapt := 
 
