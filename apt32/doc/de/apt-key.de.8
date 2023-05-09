@@ -1,0 +1,167 @@
+'\" t
+.\"     Title: apt-key
+.\"    Author: Jason Gunthorpe
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 28. Oktober 2008
+.\"    Manual: APT
+.\"    Source: Linux
+.\"  Language: English
+.\"
+.TH "APT\-KEY" "8" "28\&. Oktober 2008" "Linux" "APT"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+apt-key \- APT\-Schlüsselverwaltungsdienstprogramm
+.SH "SYNOPSIS"
+.HP \w'\fBapt\-key\fR\ 'u
+\fBapt\-key\fR [\fB\-\-keyring\ \fR\fB\fIfilename\fR\fR] [\fIcommand\fR] [\fB\fIarguments\fR\fR...]
+.SH "BESCHREIBUNG"
+.PP
+
+\fBapt\-key\fR
+wird benutzt, um eine Liste von Schlüsseln zu verwalten, die APT benutzt, um Pakete zu authentifizieren\&. Pakete, die durch Benutzung dieser Schlüssel authentifiziert wurden, werden als vertrauenswürdig betrachtet\&.
+.SH "BEFEHLE"
+.PP
+add \fIDateiname\fR
+.RS 4
+Einen neuen Schlüssel zur Liste der vertrauenswürdigen Schlüssel hinzufügen\&. Der Schlüssel wird aus
+\fIDateiname\fR
+gelesen oder, wenn
+\fIDateiname\fR
+\-
+ist, von der Standardeingabe\&.
+.RE
+.PP
+del \fISchlüssel\-ID\fR
+.RS 4
+Einen Schlüssel von der Liste der vertrauenswürdigen Schlüssel entfernen\&.
+.RE
+.PP
+export \fISchlüssel\-ID\fR
+.RS 4
+Den Schlüssel
+\fISchlüssel\-ID\fR
+auf der Standardausgabe ausgeben\&.
+.RE
+.PP
+exportall
+.RS 4
+Alle vertrauenswürdigen Schlüssel auf der Standardausgabe ausgeben\&.
+.RE
+.PP
+list
+.RS 4
+Vertrauenswürdige Schlüssel auflisten\&.
+.RE
+.PP
+finger
+.RS 4
+Fingerabdrücke vertrauenswürdiger Schlüssel auflisten\&.
+.RE
+.PP
+adv
+.RS 4
+Erweitere Optionen an gpg weiterleiten\&. Mit adv \-\-recv\-key können Sie den öffentlichen Schlüssel herunterladen\&.
+.RE
+.PP
+update
+.RS 4
+Den lokalen Schlüsselring mit dem Schlüsselring der Debian\-Archivschlüssel aktualisieren und aus dem Schlüsselring die Archivschlüssel entfernen, die nicht länger gültig sind\&.
+.RE
+.SH "OPTIONEN"
+.PP
+Note that options need to be defined before the commands described in the previous section\&.
+.PP
+\-\-keyring \fIfilename\fR
+.RS 4
+With this option it is possible to specify a specific keyring file the command should operate on\&. The default is that a command is executed on the
+trusted\&.gpg
+file as well as on all parts in the
+trusted\&.gpg\&.d
+directory, through
+trusted\&.gpg
+is the primary keyring which means that e\&.g\&. new keys are added to this one\&.
+.RE
+.SH "DATEIEN"
+.PP
+/etc/apt/trusted\&.gpg
+.RS 4
+Keyring of local trusted keys, new keys will be added here\&. Configuration Item:
+Dir::Etc::Trusted\&.
+.RE
+.PP
+/etc/apt/trusted\&.gpg\&.d/
+.RS 4
+File fragments for the trusted keys, additional keyrings can be stored here (by other packages or the administrator)\&. Configuration Item
+Dir::Etc::TrustedParts\&.
+.RE
+.PP
+/etc/apt/trustdb\&.gpg
+.RS 4
+Lokale Datenbank vertrauenswürdiger Archivschlüssel\&.
+.RE
+.PP
+/usr/share/keyrings/debian\-archive\-keyring\&.gpg
+.RS 4
+Schlüsselring vertrauenswürdiger Schlüssel des Debian\-Archivs\&.
+.RE
+.PP
+/usr/share/keyrings/debian\-archive\-removed\-keys\&.gpg
+.RS 4
+Schlüsselring entfernter vertrauenswürdiger Schlüssel des Debian\-Archivs\&.
+.RE
+.SH "SIEHE AUCH"
+.PP
+
+\fBapt-get\fR(8),
+\fBapt-secure\fR(8)
+.SH "FEHLER"
+.PP
+\m[blue]\fBAPT\-Fehlerseite\fR\m[]\&\s-2\u[1]\d\s+2\&. Wenn Sie einen Fehler in APT berichten möchten, lesen Sie bitte
+/usr/share/doc/debian/bug\-reporting\&.txt
+oder den
+\fBreportbug\fR(1)\-Befehl\&. Verfassen Sie Fehlerberichte bitte auf Englisch\&.
+.SH "AUTOR"
+.PP
+APT wurde vom APT\-Team geschrieben
+apt@packages\&.debian\&.org\&.
+.SH "ÜBERSETZUNG"
+.PP
+Die deutsche Übersetzung wurde 2009 von Chris Leick
+c\&.leick@vollbio\&.de
+angefertigt in Zusammenarbeit mit dem Debian German\-l10n\-Team
+debian\-l10n\-german@lists\&.debian\&.org\&.
+.PP
+Note that this translated document may contain untranslated parts\&. This is done on purpose, to avoid losing content when the translation is lagging behind the original content\&.
+.SH "AUTHOR"
+.PP
+\fBJason Gunthorpe\fR
+.RS 4
+.RE
+.SH "COPYRIGHT"
+.br
+Copyright \(co 1998-2001 Jason Gunthorpe
+.br
+.SH "NOTES"
+.IP " 1." 4
+APT-Fehlerseite
+.RS 4
+\%http://bugs.debian.org/src:apt
+.RE

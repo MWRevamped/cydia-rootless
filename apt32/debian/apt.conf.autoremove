@@ -1,0 +1,9 @@
+APT
+{
+  NeverAutoRemove  
+  { 
+	"^linux-image.*";  
+	"^linux-restricted-modules.*";
+	"^kfreebsd-image.*";  
+  };
+};

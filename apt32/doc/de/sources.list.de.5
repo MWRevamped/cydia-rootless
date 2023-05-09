@@ -1,0 +1,312 @@
+'\" t
+.\"     Title: sources.list
+.\"    Author: Jason Gunthorpe
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 29. Februar 2004
+.\"    Manual: APT
+.\"    Source: Linux
+.\"  Language: English
+.\"
+.TH "SOURCES\&.LIST" "5" "29\&. Februar 2004" "Linux" "APT"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+sources.list \- Paketressourcenliste für APT
+.SH "BESCHREIBUNG"
+.PP
+Die Paketquellenliste wird benutzt, um Archive des Paketverteilungssystems, das auf dem System benutzt wird, zu finden\&. Momentan dokumentiert diese Handbuchseite nur das vom Debian\-GNU/Linux\-System benutzte Paketierungssystem\&. Diese Steuerungsdatei ist
+/etc/apt/sources\&.list\&.
+.PP
+Die Quellenliste wurde entworfen, um eine beliebige Anzahl von aktiven Quellen und eine Vielzahl von Quellmedien zu unterstützen\&. Die Datei listet eine Quelle pro Zeile auf, wobei die bevorzugten Quellen zuerst aufgelistet sind\&. Das Format jeder Zeile lautet:
+Typ URI Argumente\&. Das erste Element
+Typ
+legt das Format für
+Argumente
+fest\&.
+URI
+ist ein universeller Quellenbezeichner \(FcUniversal Resource Identifier\(Fo (URI), der eine Obermenge des spezielleren und besser bekannten Universal Resource Locator (URL) ist\&. Der Rest der Zeile kann unter Verwendung von # als Kommentar markiert werden\&.
+.SH "SOURCES.LIST.D"
+.PP
+Das Verzeichnis
+/etc/apt/sources\&.list\&.d
+stellt eine Möglichkeit bereit, sources\&.list\-Einträge in separaten Dateien hinzuzufügen\&. Das Format ist das gleiche wie für die normale
+sources\&.list\-Datei\&. Dateinamen müssen mit
+\&.list
+enden und können nur Buchstaben (a\-z und A\-Z), Ziffern (0\-9), Unterstriche (_), Bindestriche (\-) und Punkte (\&.) enthalten\&. Ansonsten werden sie stillschweigend ignoriert\&.
+.SH "DIE TYPEN DEB UND DEB-SRC"
+.PP
+Der
+deb\-Typ beschreibt ein typisches zweistufiges Debian\-Archiv,
+Distribution/Komponente\&.
+Distribution
+ist typischerweise entweder
+stable,
+unstable
+oder
+testing, während Komponente entweder
+main,
+contrib,
+non\-free
+oder
+non\-us
+ist\&. Der
+deb\-src\-Typ beschreibt einen Quellcode einer Debian\-Distribution in der gleichen Form wie den
+deb\-Typ\&. Eine
+deb\-src\-Zeile wird benötigt, um Quellindizes herunterzuladen\&.
+.PP
+Das Format für einen
+sources\&.list\-Eintrag, der die
+deb\- und
+deb\-src\-Typen benutzt, ist:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb URI Distribution [Komponente1] [Komponente2] [\&.\&.\&.]
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Die URI für den
+deb\-Typ muss die Basis der Debian\-Distribution angeben, wo APT die Informationen findet, die es benötigt\&.
+Distribution
+kann einen genauen Pfad angeben\&. In diesem Fall müssen die Komponenten weggelassen werden und
+Distribution
+muss mit einem Schrägstrich (/) enden\&. Dies ist nützlich, wenn nur ein bestimmter Unterabschnitt des von der URI angegebenen Archivs von Interesse ist\&. Wenn
+Distribution
+keinen genauen Pfad angibt, muss mindestens eine
+Komponente
+angegeben sein\&.
+.PP
+distribution
+könnte außerdem eine Variable,
+$(ARCH), enthalten, die zur Debian\-Architektur (i386, m68k, powerpc, \&.\&.\&.) expandiert wird, die auf dem System benutzt wird\&. Dies erlaubt es, architekturabhängige
+sources\&.list\-Dateien zu benutzen\&. Im Allgemeinen ist dies nur von Interesse, wenn ein genauer Pfad angegeben wird, andernfalls wird
+APT
+automatisch eine URI mit der aktuellen Architektur generieren\&.
+.PP
+Da pro Zeile nur eine Distribution angegeben werden kann, könnte es nötig sein, mehrere Zeilen für die gleiche URI zu haben, falls eine Untermenge aller verfügbarer Distributionen oder Komponenten von diesem Ort gewünscht wird\&. APT wird die URI\-Liste sortieren, nachdem es intern eine komplette Zusammenstellung generiert hat und es wird mehrere Bezüge zum gleichen Internet\-Host zusammenfassen, zum Beispiel zu einer einzigen Verbindung, so dass es nicht ineffizient FTP\-Verbindungen herstellt, sie schließt, sonst etwas tut und dann erneut eine Verbindung zum gleichen Host herstellt\&. Diese Funktion ist nützlich für den Zugriff auf ausgelastete FTP\-Sites mit Begrenzungen der Anzahl gleichzeitiger anonymer Anwender\&. APT parallelisiert außerdem Verbindungen zu verschiedenen Hosts, um effektiver mit Orten niedriger Bandbreite hauszuhalten\&.
+.PP
+Es ist wichtig, die Quellen in der Reihenfolge ihrer Wichtigkeit aufzulisten, die bevorzugte Quelle zuerst\&. Typischerweise resultiert dies in einer Sortierung nach Geschwindigkeit, vom schnellsten zum langsamsten (CD\-ROM, gefolgt von Rechnern im lokalen Netzwerk, gefolgt von Internet\-Rechnern, zum Beispiel)\&.
+.PP
+Einige Beispiele:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb http://http\&.us\&.debian\&.org/debian stable main contrib non\-free
+deb http://http\&.us\&.debian\&.org/debian dists/stable\-updates/
+   
+.fi
+.if n \{\
+.RE
+.\}
+.SH "URI-BESCHREIBUNG"
+.PP
+Die aktuell erkannten URI\-Typen sind \(Fccdrom\(Fo, \(Fcfile\(Fo, \(Fchttp\(Fo, \(Fcftp\(Fo, \(Fccopy\(Fo, \(Fcssh\(Fo, \(Fcrsh\(Fo\&.
+.PP
+file
+.RS 4
+Das file\-Schema erlaubt es einem beliebigen Verzeichnis im Dateisystem, als Archiv betrachtet zu werden\&. Dies ist nützlich für eingehängtes NFS und lokale Spiegel oder Archive\&.
+.RE
+.PP
+cdrom
+.RS 4
+Das cdrom\-Schema erlaubt APT ein lokales CD\-ROM\-Laufwerk mit Medienwechsel zu benutzen\&. Benutzen Sie das Programm
+\fBapt-cdrom\fR(8), um CD\-ROM\-Einträge in der Quellenliste zu erstellen\&.
+.RE
+.PP
+http
+.RS 4
+Das http\-Schema gibt einen HTTP\-Server für das Archiv an\&. Wenn eine Umgebungsvariable
+\fBhttp_proxy\fR
+mit dem Format http://Server:Port/ gesetzt ist, wird der in
+\fBhttp_proxy\fR
+angegebene Proxy\-Server benutzt\&. Anwender eines HTTP/1\&.1\-authentifizierten Proxys können eine Zeichenkette mit dem Format http://Anwender:Passwort@Server:Port/ benutzt\&. Beachten Sie, dass dies eine unsichere Authentifizierungsmethode ist\&.
+.RE
+.PP
+ftp
+.RS 4
+Das ftp\-Schema gibt einen FTP\-Server für das Archiv an\&. Das FTP\-Verhalten von APT ist in hohem Maße konfigurierbar\&. Um weitere Informationen zu erhalten, lesen Sie die
+\fBapt.conf\fR(5)\-Handbuchseite\&. Bitte beachten Sie, dass ein FTP\-Proxy durch Benutzung der
+\fBftp_proxy\fR\-Umgebungsvariablen angegeben werden kann\&. Es ist mit dieser Methode und NUR dieser Methode möglich, einen HTTP\-Proxy anzugeben (HTTP\-Proxy\-Server verstehen oft auch FTP\-URLs)\&. FTP\-Proxys, die gemäß Angabe in der Konfigurationsdatei HTTP benutzen, werden ignoriert\&.
+.RE
+.PP
+copy
+.RS 4
+Das copy\-Schema ist identisch mit dem file\-Schema, außer dass Pakete in das Zwischenspeicherverzeichnis kopiert werden, anstatt direkt von ihrem Herkunftsort benutzt zu werden\&. Dies ist für Leute nützlich, die eine ZIP\-Platte benutzen, um Dateien mit APT umherzukopieren\&.
+.RE
+.PP
+rsh, ssh
+.RS 4
+Die rsh/ssh\-Methode ruft rsh/ssh auf, um sich als angegebener Benutzer mit einem Rechner in der Ferne zu verbinden und auf die Dateien zuzugreifen\&. Es ist eine gute Idee, vorher Vorbereitungen mit RSA\-Schlüsseln oder rhosts zu treffen\&. Der Zugriff auf Dateien in der Ferne benutzt die Standardbefehle
+\fBfind\fR
+und
+\fBdd\fR, um die Datenübertragung aus der Ferne durchzuführen\&.
+.RE
+.PP
+more recognizable URI types
+.RS 4
+APT can be extended with more methods shipped in other optional packages which should follow the nameing scheme
+apt\-transport\-\fImethod\fR\&. The APT team e\&.g\&. maintains also the
+apt\-transport\-https
+package which provides access methods for https\-URIs with features similar to the http method, but other methods for using e\&.g\&. debtorrent are also available, see
+\fBapt-transport-debtorrent\fR(1)\&.
+.RE
+.SH "BEISPIELE"
+.PP
+Benutzt die lokal gespeicherten (oder per NFS eingehängten) Archive in /home/jason/debian für stable/main, stable/contrib und stable/non\-free\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb file:/home/jason/debian stable main contrib non\-free
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Wie oben, außer das dies die \(Fcunstable\(Fo\- (Entwicklungs\-) Distribution benutzt\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb file:/home/jason/debian unstable main contrib non\-free
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Quellzeile für obiges
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb\-src file:/home/jason/debian unstable main contrib non\-free
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Benutzt HTTP, um auf das Archiv auf archive\&.debian\&.org zuzugreifen und nur den hamm/main\-Bereich zu benutzen\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb http://archive\&.debian\&.org/debian\-archive hamm main
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Benutzt FTP, um auf das Archiv auf archive\&.debian\&.org unter dem debian\-Verzeichnis zuzugreifen und nur den stable/contrib\-Bereich zu benutzen\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb ftp://ftp\&.debian\&.org/debian stable contrib
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Benutzt FTP, um auf das Archiv auf ftp\&.debian\&.org unter dem debian\-Verzeichnis zuzugreifen und nur den unstable/contrib\-Bereich zu benutzen\&. Falls diese Zeile zusammen mit der aus dem vorherigen Beispiel in der Datei
+sources\&.list
+auftaucht, wird eine einzelne FTP\-Sitzung für beide Quellzeilen benutzt\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb ftp://ftp\&.debian\&.org/debian unstable contrib
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Benutzt HTTP, um auf das Archiv auf nonus\&.debian\&.org unter dem debian\-non\-US\-Verzeichnis zuzugreifen\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb http://nonus\&.debian\&.org/debian\-non\-US stable/non\-US main contrib non\-free
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+Benutzt HTTP, um auf das Archiv auf nonus\&.debian\&.org unter dem debian\-non\-US\-Verzeichnis zuzugreifen und benutzt nur Dateien, die unter
+unstable/binary\-i386
+auf i386\-Maschinen,
+unstable/binary\-m68k
+auf m68k und so weiter für andere unterstützte Architekturen, gefunden werden\&. [Beachten Sie, dass dieses Beispiel nur anschaulich macht, wie die Platzhaltervariable benutzt wird\&. \(Fcnon\-us\(Fo ist nicht länger so strukturiert]
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+deb http://ftp\&.de\&.debian\&.org/debian\-non\-US unstable/binary\-$(ARCH)/
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+.SH "SIEHE AUCH"
+.PP
+\fBapt-cache\fR(8)
+\fBapt.conf\fR(5)
+.SH "FEHLER"
+.PP
+\m[blue]\fBAPT\-Fehlerseite\fR\m[]\&\s-2\u[1]\d\s+2\&. Wenn Sie einen Fehler in APT berichten möchten, lesen Sie bitte
+/usr/share/doc/debian/bug\-reporting\&.txt
+oder den
+\fBreportbug\fR(1)\-Befehl\&. Verfassen Sie Fehlerberichte bitte auf Englisch\&.
+.SH "ÜBERSETZUNG"
+.PP
+Die deutsche Übersetzung wurde 2009 von Chris Leick
+c\&.leick@vollbio\&.de
+angefertigt in Zusammenarbeit mit dem Debian German\-l10n\-Team
+debian\-l10n\-german@lists\&.debian\&.org\&.
+.PP
+Note that this translated document may contain untranslated parts\&. This is done on purpose, to avoid losing content when the translation is lagging behind the original content\&.
+.SH "AUTHORS"
+.PP
+\fBJason Gunthorpe\fR
+.RS 4
+.RE
+.PP
+\fBAPT\-Team\fR
+.RS 4
+.RE
+.SH "NOTES"
+.IP " 1." 4
+APT-Fehlerseite
+.RS 4
+\%http://bugs.debian.org/src:apt
+.RE
